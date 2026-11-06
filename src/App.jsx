@@ -1,25 +1,22 @@
 import { useState } from 'react';
-import Button from './components/ui/Button';
-import Input from './components/ui/Input';
 import Card from './components/ui/Card';
+import CustomerForm from './components/customers/CustomerForm';
 
 function App() {
-  const [name, setName] = useState('');
+  const [customers, setCustomers] = useState([]);
+
+  function addCustomer(customer) {
+    setCustomers((prev) => [...prev, customer]);
+    console.log('New customer:', customer);
+  }
 
   return (
     <div style={{ maxWidth: 400, margin: '40px auto' }}>
       <h1>LipaFlow</h1>
-      <Card title="Component test">
-        <Input
-          label="Customer name"
-          name="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Wanjiku"
-        />
-        <Button onClick={() => alert(`Hello ${name}`)}>Say hello</Button>{' '}
-        <Button variant="danger" onClick={() => setName('')}>Clear</Button>
+      <Card title="Add customer">
+        <CustomerForm onAddCustomer={addCustomer} />
       </Card>
+      <p>Customers saved: {customers.length}</p>
     </div>
   );
 }
