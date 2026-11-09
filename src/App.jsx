@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import Card from './components/ui/Card';
 import CustomerForm from './components/customers/CustomerForm';
+import CustomerList from './components/customers/CustomerList';
 
 function App() {
   const [customers, setCustomers] = useState([]);
 
   function addCustomer(customer) {
     setCustomers((prev) => [...prev, customer]);
-    console.log('New customer:', customer);
+  }
+
+  function deleteCustomer(id) {
+    setCustomers((prev) => prev.filter((c) => c.id !== id));
   }
 
   return (
@@ -16,7 +20,9 @@ function App() {
       <Card title="Add customer">
         <CustomerForm onAddCustomer={addCustomer} />
       </Card>
-      <p>Customers saved: {customers.length}</p>
+      <Card title={`Customers (${customers.length})`}>
+        <CustomerList customers={customers} onDelete={deleteCustomer} />
+      </Card>
     </div>
   );
 }
