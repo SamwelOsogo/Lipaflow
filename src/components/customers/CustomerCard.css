@@ -1,0 +1,10 @@
+.customer-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.customer-info h4 { margin-bottom: 2px; }
+.customer-info p { font-size: 0.9rem; color: #6b7280; }
