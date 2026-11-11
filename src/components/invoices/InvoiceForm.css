@@ -1,0 +1,32 @@
+.invoice-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.invoice-field select,
+.item-row input {
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.item-row {
+  display: grid;
+  grid-template-columns: 2fr 0.8fr 1fr auto;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.invoice-actions { margin: 10px 0; }
+
+.totals {
+  margin: 14px 0;
+  padding-top: 10px;
+  border-top: 1px solid #e5e7eb;
+  text-align: right;
+}
+
+.grand-total { font-weight: bold; font-size: 1.1rem; }
