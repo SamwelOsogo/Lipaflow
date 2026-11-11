@@ -1,11 +1,10 @@
-import { useState } from 'react';
+
 import Card from './components/ui/Card';
 import CustomerForm from './components/customers/CustomerForm';
 import CustomerList from './components/customers/CustomerList';
-
+import useLocalStorage from './hooks/useLocalStorage';
 function App() {
-  const [customers, setCustomers] = useState([]);
-
+const [customers, setCustomers] = useLocalStorage('lipaflow-customers', []);
   function addCustomer(customer) {
     setCustomers((prev) => [...prev, customer]);
   }
