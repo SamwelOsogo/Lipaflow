@@ -2,13 +2,14 @@ import { useState } from 'react';
 import Button from '../ui/Button';
 import { calculateTotals, formatKES } from '../../utils/money';
 import './InvoiceForm.css';
-
+import { daysFromTodayISO } from '../../utils/dates';
 function createItem() {
   return { id: crypto.randomUUID(), description: '', quantity: '1', price: '' };
 }
 
 function InvoiceForm({ customers, onAddInvoice }) {
   const [customerId, setCustomerId] = useState('');
+  const [dueDate, setDueDate] = useState(() => daysFromTodayISO(14));
   const [items, setItems] = useState([createItem()]);
   const [errors, setErrors] = useState({});
 
@@ -31,6 +32,7 @@ function InvoiceForm({ customers, onAddInvoice }) {
   function validate() {
     const newErrors = {};
     if (!customerId) newErrors.customer = 'Choose a customer';
+    if (!dueDate) newErrors.dueDate = 'Choose a due date';
 
     const itemsValid = items.every(
       (item) =>
