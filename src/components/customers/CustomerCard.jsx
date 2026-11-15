@@ -3,6 +3,11 @@ import Button from '../ui/Button';
 
 function CustomerCard({ customer, onDelete }) {
   const { id, name, phone, email } = customer;
+  function handleDelete() {
+  if (window.confirm(`Delete ${name}?`)) {
+    onDelete(id);
+  }
+}
 
   return (
     <div className="customer-card">
