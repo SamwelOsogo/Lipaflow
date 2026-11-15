@@ -14,7 +14,7 @@ function useLocalStorage(key, initialValue) {
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch {
-      // storage is full or blocked, so we skip saving
+      // Handle error if needed
     }
   }, [key, value]);
 

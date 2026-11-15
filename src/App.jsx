@@ -14,8 +14,13 @@ function App() {
   }
 
   function deleteCustomer(id) {
-    setCustomers((prev) => prev.filter((c) => c.id !== id));
+  const hasInvoices = invoices.some((inv) => inv.customerId === id);
+  if (hasInvoices) {
+    alert('This customer has invoices, so they cannot be deleted.');
+    return;
   }
+  setCustomers((prev) => prev.filter((c) => c.id !== id));
+}
 
   function addInvoice(invoice) {
     setInvoices((prev) => [...prev, invoice]);

@@ -1,16 +1,41 @@
+import { useState } from 'react';
+import './InvoiceList.css';
 import InvoiceCard from './InvoiceCard';
+import Button from '../ui/Button';
 import { todayISO } from '../../utils/dates';
+import { getDisplayStatus } from '../../utils/invoiceStatus';
+
+const FILTERS = ['All', 'Pending', 'Overdue', 'Paid'];
 
 function InvoiceList({ invoices, customers, onMarkPaid }) {
+  const [filter, setFilter] = useState('All');
+
   if (invoices.length === 0) {
     return <p>No invoices yet. Create your first one above.</p>;
   }
 
   const today = todayISO();
+  const visible = [...invoices]
+    .reverse()
+    .filter((inv) => filter === 'All' || getDisplayStatus(inv, today) === filter);
 
   return (
     <div>
-      {[...invoices].reverse().map((invoice) => {
+      <div className="filter-bar">
+        {FILTERS.map((f) => (
+          <Button
+            key={f}
+            variant={filter === f ? 'primary' : 'secondary'}
+            onClick={() => setFilter(f)}
+          >
+            {f}
+          </Button>
+        ))}
+      </div>
+
+      {visible.length === 0 && <p>No {filter.toLowerCase()} invoices.</p>}
+
+      {visible.map((invoice) => {
         const customer = customers.find((c) => c.id === invoice.customerId);
         return (
           <InvoiceCard

@@ -44,7 +44,7 @@ function InvoiceForm({ customers, onAddInvoice }) {
     return newErrors;
   }
 
-  function handleSubmit(e) {
+  function handleSubmit(e)  {
     e.preventDefault();
 
     const newErrors = validate();
@@ -52,8 +52,9 @@ function InvoiceForm({ customers, onAddInvoice }) {
     if (Object.keys(newErrors).length > 0) return;
 
     onAddInvoice({
-      id: crypto.randomUUID,
+      id: crypto.randomUUID(),
       customerId: Number(customerId),
+      dueDate,
       items: items.map(({ description, quantity, price }) => ({
         description: description.trim(),
         quantity: Number(quantity),
@@ -62,9 +63,11 @@ function InvoiceForm({ customers, onAddInvoice }) {
       ...totals,
       status: 'Pending',
       createdAt: new Date().toISOString(),
+      
     });
 
     setCustomerId('');
+    setDueDate(daysFromTodayISO(14));
     setItems([createItem()]);
     setErrors({});
   }
@@ -76,6 +79,7 @@ function InvoiceForm({ customers, onAddInvoice }) {
   return (
     <form onSubmit={handleSubmit} noValidate>
       <div className="invoice-field">
+        
         <label htmlFor="customer">Customer</label>
         <select
           id="customer"
@@ -91,6 +95,17 @@ function InvoiceForm({ customers, onAddInvoice }) {
         </select>
         {errors.customer && <span className="error-text">{errors.customer}</span>}
       </div>
+      <div className="invoice-field">
+  <label htmlFor="dueDate">Due date</label>
+  <input
+    id="dueDate"
+    type="date"
+    value={dueDate}
+    onChange={(e) => setDueDate(e.target.value)}
+  />
+  {errors.dueDate && <span className="error-text">{errors.dueDate}</span>}
+</div>
+
 
       <h4>Items</h4>
       {items.map((item) => (

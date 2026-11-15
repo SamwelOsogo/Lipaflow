@@ -1,4 +1,4 @@
-.invoice-field {
+.invoice-field input {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -13,7 +13,7 @@
   font-size: 1rem;
 }
 
-.item-row {
+.item-row input {
   display: grid;
   grid-template-columns: 2fr 0.8fr 1fr auto;
   gap: 6px;
