@@ -8,13 +8,15 @@ const emptyForm = { name: '', phone: '', email: '' };
 function CustomerForm({ onAddCustomer }) {
   const [values, setValues] = useState(emptyForm);
   const [errors, setErrors] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   function handleChange(e) {
     const { name, value } = e.target;
     setValues({ ...values, [name]: value });
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     const newErrors = {
@@ -27,9 +29,17 @@ function CustomerForm({ onAddCustomer }) {
     const hasErrors = Object.values(newErrors).some((msg) => msg !== '');
     if (hasErrors) return;
 
-    onAddCustomer({ ...values, name: values.name.trim(), id: Date.now() });
-    setValues(emptyForm);
-    setErrors({});
+    setSaving(true);
+    setSubmitError('');
+    try {
+      await onAddCustomer({ ...values, name: values.name.trim() });
+      setValues(emptyForm);
+      setErrors({});
+    } catch (err) {
+      setSubmitError(err.message);
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -60,7 +70,10 @@ function CustomerForm({ onAddCustomer }) {
         placeholder="e.g. wanjiku@example.com"
         error={errors.email}
       />
-      <Button type="submit">Add customer</Button>
+      {submitError && <p className="error-text">{submitError}</p>}
+      <Button type="submit" disabled={saving}>
+        {saving ? 'Saving...' : 'Add customer'}
+      </Button>
     </form>
   );
 }
