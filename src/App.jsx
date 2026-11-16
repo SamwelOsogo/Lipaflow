@@ -1,26 +1,28 @@
 import Card from './components/ui/Card';
+import Button from './components/ui/Button';
 import CustomerForm from './components/customers/CustomerForm';
 import CustomerList from './components/customers/CustomerList';
 import InvoiceForm from './components/invoices/InvoiceForm';
 import InvoiceList from './components/invoices/InvoiceList';
 import useLocalStorage from './hooks/useLocalStorage';
+import useCustomers from './hooks/useCustomers';
 
 function App() {
-  const [customers, setCustomers] = useLocalStorage('lipaflow-customers', []);
+  const { customers, loading, error, retry, addCustomer, removeCustomer } = useCustomers();
   const [invoices, setInvoices] = useLocalStorage('lipaflow-invoices', []);
 
-  function addCustomer(customer) {
-    setCustomers((prev) => [...prev, customer]);
+  async function deleteCustomer(id) {
+    const hasInvoices = invoices.some((inv) => inv.customerId === id);
+    if (hasInvoices) {
+      alert('This customer has invoices, so they cannot be deleted.');
+      return;
+    }
+    try {
+      await removeCustomer(id);
+    } catch (err) {
+      alert(err.message);
+    }
   }
-
-  function deleteCustomer(id) {
-  const hasInvoices = invoices.some((inv) => inv.customerId === id);
-  if (hasInvoices) {
-    alert('This customer has invoices, so they cannot be deleted.');
-    return;
-  }
-  setCustomers((prev) => prev.filter((c) => c.id !== id));
-}
 
   function addInvoice(invoice) {
     setInvoices((prev) => [...prev, invoice]);
@@ -41,19 +43,36 @@ function App() {
       </Card>
 
       <Card title={`Customers (${customers.length})`}>
-        <CustomerList customers={customers} onDelete={deleteCustomer} />
+        {loading && <p>Loading customers...</p>}
+        {error && (
+          <div>
+            <p className="error-text">{error}</p>
+            <Button onClick={retry}>Try again</Button>
+          </div>
+        )}
+        {!loading && !error && (
+          <CustomerList customers={customers} onDelete={deleteCustomer} />
+        )}
       </Card>
 
       <Card title="Create invoice">
-        <InvoiceForm customers={customers} onAddInvoice={addInvoice} />
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <InvoiceForm customers={customers} onAddInvoice={addInvoice} />
+        )}
       </Card>
 
       <Card title={`Invoices (${invoices.length})`}>
-        <InvoiceList
-          invoices={invoices}
-          customers={customers}
-          onMarkPaid={markInvoicePaid}
-        />
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <InvoiceList
+            invoices={invoices}
+            customers={customers}
+            onMarkPaid={markInvoicePaid}
+          />
+        )}
       </Card>
     </div>
   );
