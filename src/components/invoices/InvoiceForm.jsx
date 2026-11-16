@@ -53,7 +53,7 @@ function InvoiceForm({ customers, onAddInvoice }) {
 
     onAddInvoice({
       id: crypto.randomUUID(),
-      customerId: Number(customerId),
+      customerId,
       dueDate,
       items: items.map(({ description, quantity, price }) => ({
         description: description.trim(),
