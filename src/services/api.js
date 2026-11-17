@@ -1,6 +1,7 @@
 const DB_KEY = 'lipaflow-db-customers';
 const DELAY_MS = 800;
-const FAIL_RATE = 0;
+const FAIL_RATE = 0
+;
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
