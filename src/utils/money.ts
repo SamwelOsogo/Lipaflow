@@ -1,17 +1,28 @@
 export const VAT_RATE = 0.16;
 
-function round2(n) {
+interface Priced {
+  quantity: number | string;
+  price: number | string;
+}
+
+export interface Totals {
+  subtotal: number;
+  vat: number;
+  total: number;
+}
+
+function round2(n: number): number {
   return Math.round(n * 100) / 100;
 }
 
-export function formatKES(amount) {
+export function formatKES(amount: number): string {
   return new Intl.NumberFormat('en-KE', {
     style: 'currency',
     currency: 'KES',
   }).format(amount);
 }
 
-export function calculateTotals(items) {
+export function calculateTotals(items: readonly Priced[]): Totals {
   const subtotal = items.reduce((sum, item) => {
     const quantity = Number(item.quantity) || 0;
     const price = Number(item.price) || 0;
