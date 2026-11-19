@@ -6,12 +6,14 @@ import InvoiceForm from './components/invoices/InvoiceForm';
 import InvoiceList from './components/invoices/InvoiceList';
 import useLocalStorage from './hooks/useLocalStorage';
 import useCustomers from './hooks/useCustomers';
+import { getErrorMessage } from './utils/errors';
+import type { Invoice } from './types';
 
 function App() {
   const { customers, loading, error, retry, addCustomer, removeCustomer } = useCustomers();
-  const [invoices, setInvoices] = useLocalStorage('lipaflow-invoices', []);
+  const [invoices, setInvoices] = useLocalStorage<Invoice[]>('lipaflow-invoices', []);
 
-  async function deleteCustomer(id) {
+  async function deleteCustomer(id: string) {
     const hasInvoices = invoices.some((inv) => inv.customerId === id);
     if (hasInvoices) {
       alert('This customer has invoices, so they cannot be deleted.');
@@ -20,17 +22,17 @@ function App() {
     try {
       await removeCustomer(id);
     } catch (err) {
-      alert(err.message);
+      alert(getErrorMessage(err));
     }
   }
 
-  function addInvoice(invoice) {
+  function addInvoice(invoice: Invoice) {
     setInvoices((prev) => [...prev, invoice]);
   }
 
-  function markInvoicePaid(id) {
+  function markInvoicePaid(id: string) {
     setInvoices((prev) =>
-      prev.map((inv) => (inv.id === id ? { ...inv, status: 'Paid' } : inv))
+      prev.map((inv): Invoice => (inv.id === id ? { ...inv, status: 'Paid' } : inv))
     );
   }
 
