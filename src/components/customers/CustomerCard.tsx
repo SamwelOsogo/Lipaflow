@@ -1,13 +1,20 @@
 import './CustomerCard.css';
 import Button from '../ui/Button';
+import type { Customer } from '../../types';
 
-function CustomerCard({ customer, onDelete }) {
+interface CustomerCardProps {
+  customer: Customer;
+  onDelete: (id: string) => void;
+}
+
+function CustomerCard({ customer, onDelete }: CustomerCardProps) {
   const { id, name, phone, email } = customer;
-  const handleDelete = () => {
+
+  function handleDelete() {
     if (window.confirm(`Delete ${name}?`)) {
       onDelete(id);
     }
-  };
+  }
 
   return (
     <div className="customer-card">

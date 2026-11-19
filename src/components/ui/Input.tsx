@@ -1,6 +1,24 @@
-import './Input.css';
+import type { ChangeEvent } from 'react';import './Input.css';
 
-function Input({ label, name, type = 'text', value, onChange, placeholder, error }) {
+interface InputProps {
+  label: string;
+  name: string;
+  type?: string;
+  value: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  error?: string;
+}
+
+function Input({
+  label,
+  name,
+  type = 'text',
+  value,
+  onChange,
+  placeholder,
+  error,
+}: InputProps) {
   return (
     <div className="input-group">
       <label htmlFor={name}>{label}</label>

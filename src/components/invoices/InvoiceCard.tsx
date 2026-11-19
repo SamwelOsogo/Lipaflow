@@ -4,8 +4,16 @@ import StatusBadge from './StatusBadge';
 import { formatKES } from '../../utils/money';
 import { formatDate } from '../../utils/dates';
 import { getDisplayStatus } from '../../utils/invoiceStatus';
+import type { Invoice } from '../../types';
 
-function InvoiceCard({ invoice, customerName, today, onMarkPaid }) {
+interface InvoiceCardProps {
+  invoice: Invoice;
+  customerName: string;
+  today: string;
+  onMarkPaid: (id: string) => void;
+}
+
+function InvoiceCard({ invoice, customerName, today, onMarkPaid }: InvoiceCardProps) {
   const status = getDisplayStatus(invoice, today);
 
   return (

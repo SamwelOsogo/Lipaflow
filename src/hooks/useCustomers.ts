@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import * as api from '../services/api';
+import type { Customer, NewCustomer } from '../types';
+import { getErrorMessage } from '../utils/errors';
 
 function useCustomers() {
-  const [customers, setCustomers] = useState([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [attempt, setAttempt] = useState(0);
@@ -15,8 +17,8 @@ function useCustomers() {
       .then((data) => {
         if (!ignore) setCustomers(data);
       })
-      .catch((err) => {
-        if (!ignore) setError(err.message);
+      .catch((err: unknown) => {
+        if (!ignore) setError(getErrorMessage(err));
       })
       .finally(() => {
         if (!ignore) setLoading(false);
@@ -33,12 +35,12 @@ function useCustomers() {
     setAttempt((n) => n + 1);
   }
 
-  async function addCustomer(data) {
+  async function addCustomer(data: NewCustomer): Promise<void> {
     const created = await api.createCustomer(data);
     setCustomers((prev) => [...prev, created]);
   }
 
-  async function removeCustomer(id) {
+  async function removeCustomer(id: string): Promise<void> {
     await api.deleteCustomer(id);
     setCustomers((prev) => prev.filter((c) => c.id !== id));
   }

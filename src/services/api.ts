@@ -1,43 +1,46 @@
+import type { Customer, NewCustomer } from '../types';
+
 const DB_KEY = 'lipaflow-db-customers';
 const DELAY_MS = 800;
 const FAIL_RATE = 0;
 
-function wait(ms) {
+function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function simulateNetwork() {
+async function simulateNetwork(): Promise<void> {
   await wait(DELAY_MS);
   if (Math.random() < FAIL_RATE) {
     throw new Error('Network error. Please try again.');
   }
 }
 
-function readCustomers() {
+function readCustomers(): Customer[] {
   try {
-    return JSON.parse(localStorage.getItem(DB_KEY)) ?? [];
+    const raw = localStorage.getItem(DB_KEY);
+    return raw ? (JSON.parse(raw) as Customer[]) : [];
   } catch {
     return [];
   }
 }
 
-function writeCustomers(list) {
+function writeCustomers(list: Customer[]): void {
   localStorage.setItem(DB_KEY, JSON.stringify(list));
 }
 
-export async function getCustomers() {
+export async function getCustomers(): Promise<Customer[]> {
   await simulateNetwork();
   return readCustomers();
 }
 
-export async function createCustomer(data) {
+export async function createCustomer(data: NewCustomer): Promise<Customer> {
   await simulateNetwork();
-  const customer = { ...data, id: crypto.randomUUID() };
+  const customer: Customer = { ...data, id: crypto.randomUUID() };
   writeCustomers([...readCustomers(), customer]);
   return customer;
 }
 
-export async function deleteCustomer(id) {
+export async function deleteCustomer(id: string): Promise<void> {
   await simulateNetwork();
   writeCustomers(readCustomers().filter((c) => c.id !== id));
 }

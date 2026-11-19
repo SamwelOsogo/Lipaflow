@@ -1,25 +1,34 @@
 import { useState } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { validateName, validatePhone, validateEmail } from '../../utils/validators';
+import { getErrorMessage } from '../../utils/errors';
+import type { NewCustomer } from '../../types';
 
-const emptyForm = { name: '', phone: '', email: '' };
+type FormErrors = Partial<Record<keyof NewCustomer, string>>;
 
-function CustomerForm({ onAddCustomer }) {
-  const [values, setValues] = useState(emptyForm);
-  const [errors, setErrors] = useState({});
+const emptyForm: NewCustomer = { name: '', phone: '', email: '' };
+
+interface CustomerFormProps {
+  onAddCustomer: (data: NewCustomer) => Promise<void>;
+}
+
+function CustomerForm({ onAddCustomer }: CustomerFormProps) {
+  const [values, setValues] = useState<NewCustomer>(emptyForm);
+  const [errors, setErrors] = useState<FormErrors>({});
   const [saving, setSaving] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
-  function handleChange(e) {
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setValues({ ...values, [name]: value });
   }
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const newErrors = {
+    const newErrors: FormErrors = {
       name: validateName(values.name),
       phone: validatePhone(values.phone),
       email: validateEmail(values.email),
@@ -36,7 +45,7 @@ function CustomerForm({ onAddCustomer }) {
       setValues(emptyForm);
       setErrors({});
     } catch (err) {
-      setSubmitError(err.message);
+      setSubmitError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }
