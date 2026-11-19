@@ -1,6 +1,4 @@
-import type { ChangeEvent } from 'react';
-// @ts-ignore: CSS imports are handled by the bundler.
-import './Input.css';
+import type { ChangeEvent } from 'react';import './Input.css';
 
 interface InputProps {
   label: string;

@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-// @ts-ignore — the CSS module is handled by the Vite bundler
 import './Button.css';
 
 interface ButtonProps {

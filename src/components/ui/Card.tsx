@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-// @ts-ignore — CSS module declarations are not configured in this project.
 import './Card.css';
 
 interface CardProps {
