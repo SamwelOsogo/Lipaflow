@@ -1,8 +1,14 @@
 import { useState } from 'react';
 import CustomerCard from './CustomerCard';
 import Input from '../ui/Input';
+import type { Customer } from '../../types';
 
-function CustomerList({ customers, onDelete }) {
+interface CustomerListProps {
+  customers: Customer[];
+  onDelete: (id: string) => void;
+}
+
+function CustomerList({ customers, onDelete }: CustomerListProps) {
   const [search, setSearch] = useState('');
 
   if (customers.length === 0) {

@@ -4,11 +4,20 @@ import InvoiceCard from './InvoiceCard';
 import Button from '../ui/Button';
 import { todayISO } from '../../utils/dates';
 import { getDisplayStatus } from '../../utils/invoiceStatus';
+import type { Customer, DisplayStatus, Invoice } from '../../types';
 
-const FILTERS = ['All', 'Pending', 'Overdue', 'Paid'];
+type Filter = 'All' | DisplayStatus;
 
-function InvoiceList({ invoices, customers, onMarkPaid }) {
-  const [filter, setFilter] = useState('All');
+const FILTERS: Filter[] = ['All', 'Pending', 'Overdue', 'Paid'];
+
+interface InvoiceListProps {
+  invoices: Invoice[];
+  customers: Customer[];
+  onMarkPaid: (id: string) => void;
+}
+
+function InvoiceList({ invoices, customers, onMarkPaid }: InvoiceListProps) {
+  const [filter, setFilter] = useState<Filter>('All');
 
   if (invoices.length === 0) {
     return <p>No invoices yet. Create your first one above.</p>;

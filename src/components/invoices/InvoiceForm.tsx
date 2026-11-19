@@ -1,21 +1,46 @@
 import { useState } from 'react';
+import type { FormEvent } from 'react';
 import Button from '../ui/Button';
 import { calculateTotals, formatKES } from '../../utils/money';
-import './InvoiceForm.css';
 import { daysFromTodayISO } from '../../utils/dates';
-function createItem() {
+import type { Customer, Invoice } from '../../types';
+import './InvoiceForm.css';
+
+interface ItemDraft {
+  id: string;
+  description: string;
+  quantity: string;
+  price: string;
+}
+
+interface InvoiceFormErrors {
+  customer?: string;
+  dueDate?: string;
+  items?: string;
+}
+
+function createItem(): ItemDraft {
   return { id: crypto.randomUUID(), description: '', quantity: '1', price: '' };
 }
 
-function InvoiceForm({ customers, onAddInvoice }) {
+interface InvoiceFormProps {
+  customers: Customer[];
+  onAddInvoice: (invoice: Invoice) => void;
+}
+
+function InvoiceForm({ customers, onAddInvoice }: InvoiceFormProps) {
   const [customerId, setCustomerId] = useState('');
   const [dueDate, setDueDate] = useState(() => daysFromTodayISO(14));
-  const [items, setItems] = useState([createItem()]);
-  const [errors, setErrors] = useState({});
+  const [items, setItems] = useState<ItemDraft[]>([createItem()]);
+  const [errors, setErrors] = useState<InvoiceFormErrors>({});
 
   const totals = calculateTotals(items);
 
-  function updateItem(id, field, value) {
+  function updateItem(
+    id: string,
+    field: 'description' | 'quantity' | 'price',
+    value: string
+  ) {
     setItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
     );
@@ -25,12 +50,12 @@ function InvoiceForm({ customers, onAddInvoice }) {
     setItems((prev) => [...prev, createItem()]);
   }
 
-  function removeItem(id) {
+  function removeItem(id: string) {
     setItems((prev) => prev.filter((item) => item.id !== id));
   }
 
-  function validate() {
-    const newErrors = {};
+  function validate(): InvoiceFormErrors {
+    const newErrors: InvoiceFormErrors = {};
     if (!customerId) newErrors.customer = 'Choose a customer';
     if (!dueDate) newErrors.dueDate = 'Choose a due date';
 
@@ -39,12 +64,13 @@ function InvoiceForm({ customers, onAddInvoice }) {
         item.description.trim() && Number(item.quantity) > 0 && Number(item.price) > 0
     );
     if (!itemsValid) {
-      newErrors.items = 'Every item needs a description, a quantity above 0 and a price above 0';
+      newErrors.items =
+        'Every item needs a description, a quantity above 0 and a price above 0';
     }
     return newErrors;
   }
 
-  function handleSubmit(e)  {
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const newErrors = validate();
@@ -63,7 +89,6 @@ function InvoiceForm({ customers, onAddInvoice }) {
       ...totals,
       status: 'Pending',
       createdAt: new Date().toISOString(),
-      
     });
 
     setCustomerId('');
@@ -79,7 +104,6 @@ function InvoiceForm({ customers, onAddInvoice }) {
   return (
     <form onSubmit={handleSubmit} noValidate>
       <div className="invoice-field">
-        
         <label htmlFor="customer">Customer</label>
         <select
           id="customer"
@@ -95,17 +119,17 @@ function InvoiceForm({ customers, onAddInvoice }) {
         </select>
         {errors.customer && <span className="error-text">{errors.customer}</span>}
       </div>
-      <div className="invoice-field">
-  <label htmlFor="dueDate">Due date</label>
-  <input
-    id="dueDate"
-    type="date"
-    value={dueDate}
-    onChange={(e) => setDueDate(e.target.value)}
-  />
-  {errors.dueDate && <span className="error-text">{errors.dueDate}</span>}
-</div>
 
+      <div className="invoice-field">
+        <label htmlFor="dueDate">Due date</label>
+        <input
+          id="dueDate"
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+        />
+        {errors.dueDate && <span className="error-text">{errors.dueDate}</span>}
+      </div>
 
       <h4>Items</h4>
       {items.map((item) => (
