@@ -23,8 +23,7 @@ function CustomerCard({ customer, onDelete }: CustomerCardProps) {
         <p>{phone}</p>
         {email && <p>{email}</p>}
       </div>
-      <Button variant="danger" onClick={handleDelete}>
-        Delete
+<Button variant="quiet" onClick={handleDelete}>        Delete
       </Button>
     </div>
   );

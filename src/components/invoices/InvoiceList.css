@@ -1,6 +1,23 @@
 .filter-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 12px;
+  gap: 0 var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.filter {
+  min-height: 44px;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+
+.filter[aria-pressed='true'] {
+  color: var(--ink);
+  border-bottom-color: var(--pen);
 }
