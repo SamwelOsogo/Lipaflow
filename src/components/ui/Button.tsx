@@ -3,8 +3,7 @@ import './Button.css';
 
 interface ButtonProps {
   children: ReactNode;
-  variant?: 'primary' | 'secondary' | 'danger';
-  type?: 'button' | 'submit';
+variant?: 'primary' | 'secondary' | 'danger' | 'quiet';  type?: 'button' | 'submit';
   onClick?: () => void;
   disabled?: boolean;
 }

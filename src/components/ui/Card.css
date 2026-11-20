@@ -1,9 +1,14 @@
 .card {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 16px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: var(--space-4);
 }
 
-.card-title { margin-bottom: 12px; }
+.card-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-3);
+  border-bottom: 2px solid var(--ink);
+}
