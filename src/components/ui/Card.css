@@ -3,6 +3,7 @@
   border: 1px solid var(--rule);
   border-radius: 2px;
   padding: var(--space-4);
+  margin-bottom: var(--space-4);
 }
 
 .card-title {
