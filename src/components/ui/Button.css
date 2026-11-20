@@ -16,12 +16,4 @@
 
 .btn-danger { background: var(--stamp); color: #fff; }
 
-.btn-quiet {
-  background: none;
-  color: var(--pen);
-  padding: 0 var(--space-2);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
