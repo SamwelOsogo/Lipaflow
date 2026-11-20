@@ -1,0 +1,24 @@
+.app {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-4) var(--space-8);
+}
+
+.app-header { padding: var(--space-4) 0 var(--space-6); }
+
+.owed {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-6);
+  margin-top: var(--space-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.owed-overdue { color: var(--stamp); font-weight: 600; }
+
+.layout { display: grid; gap: var(--space-6); }
+.column { display: grid; gap: var(--space-6); align-content: start; }
+
+@media (min-width: 900px) {
+  .layout { grid-template-columns: 1.1fr 1fr; align-items: start; }
+}
