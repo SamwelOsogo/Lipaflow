@@ -154,27 +154,35 @@ function InvoiceForm({ customers, onAddInvoice }: InvoiceFormProps) {
             onChange={(e) => updateItem(item.id, 'price', e.target.value)}
           />
           <Button
-            variant="danger"
-            onClick={() => removeItem(item.id)}
-            disabled={items.length === 1}
-          >
-            ✕
-          </Button>
+  variant="quiet"
+  onClick={() => removeItem(item.id)}
+  disabled={items.length === 1}
+>
+  Remove
+</Button>
         </div>
       ))}
       {errors.items && <span className="error-text">{errors.items}</span>}
 
       <div className="invoice-actions">
         <Button variant="secondary" onClick={addItem}>
-          + Add item
-        </Button>
+  Add item
+</Button>
       </div>
-
-      <div className="totals">
-        <p>Subtotal: {formatKES(totals.subtotal)}</p>
-        <p>VAT (16%): {formatKES(totals.vat)}</p>
-        <p className="grand-total">Total: {formatKES(totals.total)}</p>
-      </div>
+    <div className="totals">
+  <p>
+    <span>Subtotal</span>
+    <span>{formatKES(totals.subtotal)}</span>
+  </p>
+  <p>
+    <span>VAT (16%)</span>
+    <span>{formatKES(totals.vat)}</span>
+  </p>
+  <p className="grand-total">
+    <span>Total</span>
+    <span>{formatKES(totals.total)}</span>
+  </p>
+</div>
 
       <Button type="submit">Create invoice</Button>
     </form>

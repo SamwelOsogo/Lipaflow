@@ -1,32 +1,53 @@
-.invoice-field input {
+.invoice-field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-bottom: 14px;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
 }
+
+.invoice-field label { font-weight: 600; font-size: 0.875rem; }
 
 .invoice-field select,
+.invoice-field input,
 .item-row input {
-  padding: 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 1rem;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--ink-muted);
+  border-radius: 4px;
+  font: inherit;
+  background: var(--paper);
+  color: var(--ink);
 }
 
-.item-row input {
+form h4 { margin-bottom: var(--space-2); }
+
+.item-row {
   display: grid;
-  grid-template-columns: 2fr 0.8fr 1fr auto;
-  gap: 6px;
-  margin-bottom: 8px;
+  grid-template-columns: 1fr 1fr auto;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
 }
 
-.invoice-actions { margin: 10px 0; }
+.item-row input:first-child { grid-column: 1 / -1; }
+
+.invoice-actions { margin: var(--space-3) 0; }
 
 .totals {
-  margin: 14px 0;
-  padding-top: 10px;
-  border-top: 1px solid #e5e7eb;
-  text-align: right;
+  display: grid;
+  gap: var(--space-1);
+  margin: var(--space-4) 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums;
 }
 
-.grand-total { font-weight: bold; font-size: 1.1rem; }
+.totals p { display: flex; justify-content: space-between; }
+
+.grand-total {
+  margin-top: var(--space-1);
+  padding-top: var(--space-2);
+  border-top: 2px solid var(--ink);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
