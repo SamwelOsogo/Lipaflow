@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import './InvoiceList.css';
 import InvoiceCard from './InvoiceCard';
-import Button from '../ui/Button';
 import { todayISO } from '../../utils/dates';
 import { getDisplayStatus } from '../../utils/invoiceStatus';
 import type { Customer, DisplayStatus, Invoice } from '../../types';
@@ -20,7 +19,7 @@ function InvoiceList({ invoices, customers, onMarkPaid }: InvoiceListProps) {
   const [filter, setFilter] = useState<Filter>('All');
 
   if (invoices.length === 0) {
-    return <p>No invoices yet. Create your first one above.</p>;
+    return <p>No invoices yet. Create your first one with the form.</p>;
   }
 
   const today = todayISO();
@@ -32,13 +31,15 @@ function InvoiceList({ invoices, customers, onMarkPaid }: InvoiceListProps) {
     <div>
       <div className="filter-bar">
         {FILTERS.map((f) => (
-          <Button
+          <button
             key={f}
-            variant={filter === f ? 'primary' : 'secondary'}
+            type="button"
+            className="filter"
+            aria-pressed={filter === f}
             onClick={() => setFilter(f)}
           >
             {f}
-          </Button>
+          </button>
         ))}
       </div>
 

@@ -1,3 +1,4 @@
+import './App.css';
 import Card from './components/ui/Card';
 import Button from './components/ui/Button';
 import CustomerForm from './components/customers/CustomerForm';
@@ -7,11 +8,16 @@ import InvoiceList from './components/invoices/InvoiceList';
 import useLocalStorage from './hooks/useLocalStorage';
 import useCustomers from './hooks/useCustomers';
 import { getErrorMessage } from './utils/errors';
+import { todayISO } from './utils/dates';
+import { formatKES } from './utils/money';
+import { summarizeOwed } from './utils/owed';
 import type { Invoice } from './types';
 
 function App() {
   const { customers, loading, error, retry, addCustomer, removeCustomer } = useCustomers();
   const [invoices, setInvoices] = useLocalStorage<Invoice[]>('lipaflow-invoices', []);
+
+  const owed = summarizeOwed(invoices, todayISO());
 
   async function deleteCustomer(id: string) {
     const hasInvoices = invoices.some((inv) => inv.customerId === id);
@@ -37,45 +43,59 @@ function App() {
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: '40px auto' }}>
-      <h1>LipaFlow</h1>
+    <div className="app">
+      <header className="app-header">
+        <h1>LipaFlow</h1>
+        <p className="owed">
+          <span>Waiting {formatKES(owed.waiting)}</span>
+          <span className={owed.overdue > 0 ? 'owed-overdue' : undefined}>
+            Overdue {formatKES(owed.overdue)}
+          </span>
+        </p>
+      </header>
 
-      <Card title="Add customer">
-        <CustomerForm onAddCustomer={addCustomer} />
-      </Card>
+      <main className="layout">
+        <div className="column">
+          <Card title={`Invoices (${invoices.length})`}>
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
+              <InvoiceList
+                invoices={invoices}
+                customers={customers}
+                onMarkPaid={markInvoicePaid}
+              />
+            )}
+          </Card>
 
-      <Card title={`Customers (${customers.length})`}>
-        {loading && <p>Loading customers...</p>}
-        {error && (
-          <div>
-            <p className="error-text">{error}</p>
-            <Button onClick={retry}>Try again</Button>
-          </div>
-        )}
-        {!loading && !error && (
-          <CustomerList customers={customers} onDelete={deleteCustomer} />
-        )}
-      </Card>
+          <Card title={`Customers (${customers.length})`}>
+            {loading && <p>Loading customers...</p>}
+            {error && (
+              <div>
+                <p className="error-text">{error}</p>
+                <Button onClick={retry}>Try again</Button>
+              </div>
+            )}
+            {!loading && !error && (
+              <CustomerList customers={customers} onDelete={deleteCustomer} />
+            )}
+          </Card>
+        </div>
 
-      <Card title="Create invoice">
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <InvoiceForm customers={customers} onAddInvoice={addInvoice} />
-        )}
-      </Card>
+        <div className="column">
+          <Card title="New invoice">
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
+              <InvoiceForm customers={customers} onAddInvoice={addInvoice} />
+            )}
+          </Card>
 
-      <Card title={`Invoices (${invoices.length})`}>
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <InvoiceList
-            invoices={invoices}
-            customers={customers}
-            onMarkPaid={markInvoicePaid}
-          />
-        )}
-      </Card>
+          <Card title="New customer">
+            <CustomerForm onAddCustomer={addCustomer} />
+          </Card>
+        </div>
+      </main>
     </div>
   );
 }

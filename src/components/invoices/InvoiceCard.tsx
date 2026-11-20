@@ -17,19 +17,17 @@ function InvoiceCard({ invoice, customerName, today, onMarkPaid }: InvoiceCardPr
   const status = getDisplayStatus(invoice, today);
 
   return (
-    <div className="invoice-card">
-      <div className="invoice-info">
+    <div className="invoice-row">
+      <div className="invoice-main">
         <h4>{customerName}</h4>
-        <p>
-          {invoice.items.length} item(s) · {formatKES(invoice.total)}
-        </p>
-        {invoice.dueDate && <p>Due {formatDate(invoice.dueDate)}</p>}
+        {invoice.dueDate && <p className="muted">Due {formatDate(invoice.dueDate)}</p>}
       </div>
-      <div className="invoice-side">
+      <p className="amount">{formatKES(invoice.total)}</p>
+      <div className="invoice-status">
         <StatusBadge status={status} />
         {status !== 'Paid' && (
-          <Button variant="secondary" onClick={() => onMarkPaid(invoice.id)}>
-            Mark paid
+          <Button variant="quiet" onClick={() => onMarkPaid(invoice.id)}>
+            Mark as paid
           </Button>
         )}
       </div>
