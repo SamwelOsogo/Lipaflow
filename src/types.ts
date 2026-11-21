@@ -27,3 +27,4 @@ export interface Invoice {
   status: InvoiceStatus;
   createdAt: string;
 }
+export type NewInvoice = Pick<Invoice, 'customerId' | 'dueDate' | 'items'>;
