@@ -3,7 +3,8 @@ import type { FormEvent } from 'react';
 import Button from '../ui/Button';
 import { calculateTotals, formatKES } from '../../utils/money';
 import { daysFromTodayISO } from '../../utils/dates';
-import type { Customer, Invoice } from '../../types';
+import { getErrorMessage } from '../../utils/errors';
+import type { Customer, NewInvoice } from '../../types';
 import './InvoiceForm.css';
 
 interface ItemDraft {
@@ -25,7 +26,7 @@ function createItem(): ItemDraft {
 
 interface InvoiceFormProps {
   customers: Customer[];
-  onAddInvoice: (invoice: Invoice) => void;
+  onAddInvoice: (data: NewInvoice) => Promise<void>;
 }
 
 function InvoiceForm({ customers, onAddInvoice }: InvoiceFormProps) {
@@ -33,6 +34,8 @@ function InvoiceForm({ customers, onAddInvoice }: InvoiceFormProps) {
   const [dueDate, setDueDate] = useState(() => daysFromTodayISO(14));
   const [items, setItems] = useState<ItemDraft[]>([createItem()]);
   const [errors, setErrors] = useState<InvoiceFormErrors>({});
+  const [saving, setSaving] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const totals = calculateTotals(items);
 
@@ -70,31 +73,34 @@ function InvoiceForm({ customers, onAddInvoice }: InvoiceFormProps) {
     return newErrors;
   }
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const newErrors = validate();
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
-    onAddInvoice({
-      id: crypto.randomUUID(),
-      customerId,
-      dueDate,
-      items: items.map(({ description, quantity, price }) => ({
-        description: description.trim(),
-        quantity: Number(quantity),
-        price: Number(price),
-      })),
-      ...totals,
-      status: 'Pending',
-      createdAt: new Date().toISOString(),
-    });
-
-    setCustomerId('');
-    setDueDate(daysFromTodayISO(14));
-    setItems([createItem()]);
-    setErrors({});
+    setSaving(true);
+    setSubmitError('');
+    try {
+      await onAddInvoice({
+        customerId,
+        dueDate,
+        items: items.map(({ description, quantity, price }) => ({
+          description: description.trim(),
+          quantity: Number(quantity),
+          price: Number(price),
+        })),
+      });
+      setCustomerId('');
+      setDueDate(daysFromTodayISO(14));
+      setItems([createItem()]);
+      setErrors({});
+    } catch (err) {
+      setSubmitError(getErrorMessage(err));
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (customers.length === 0) {
@@ -154,37 +160,32 @@ function InvoiceForm({ customers, onAddInvoice }: InvoiceFormProps) {
             onChange={(e) => updateItem(item.id, 'price', e.target.value)}
           />
           <Button
-  variant="quiet"
-  onClick={() => removeItem(item.id)}
-  disabled={items.length === 1}
->
-  Remove
-</Button>
+            variant="danger"
+            onClick={() => removeItem(item.id)}
+            disabled={items.length === 1}
+          >
+            ✕
+          </Button>
         </div>
       ))}
       {errors.items && <span className="error-text">{errors.items}</span>}
 
       <div className="invoice-actions">
         <Button variant="secondary" onClick={addItem}>
-  Add item
-</Button>
+          + Add item
+        </Button>
       </div>
-    <div className="totals">
-  <p>
-    <span>Subtotal</span>
-    <span>{formatKES(totals.subtotal)}</span>
-  </p>
-  <p>
-    <span>VAT (16%)</span>
-    <span>{formatKES(totals.vat)}</span>
-  </p>
-  <p className="grand-total">
-    <span>Total</span>
-    <span>{formatKES(totals.total)}</span>
-  </p>
-</div>
 
-      <Button type="submit">Create invoice</Button>
+      <div className="totals">
+        <p>Subtotal: {formatKES(totals.subtotal)}</p>
+        <p>VAT (16%): {formatKES(totals.vat)}</p>
+        <p className="grand-total">Total: {formatKES(totals.total)}</p>
+      </div>
+
+      {submitError && <p className="error-text">{submitError}</p>}
+      <Button type="submit" disabled={saving}>
+        {saving ? 'Saving...' : 'Create invoice'}
+      </Button>
     </form>
   );
 }
