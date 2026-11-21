@@ -12,8 +12,7 @@ const FILTERS: Filter[] = ['All', 'Pending', 'Overdue', 'Paid'];
 interface InvoiceListProps {
   invoices: Invoice[];
   customers: Customer[];
-  onMarkPaid: (id: string) => void;
-}
+onMarkPaid: (id: string) => Promise<void>;}
 
 function InvoiceList({ invoices, customers, onMarkPaid }: InvoiceListProps) {
   const [filter, setFilter] = useState<Filter>('All');
