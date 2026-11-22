@@ -7,6 +7,7 @@ import { formatDate } from '../../utils/dates';
 import { getDisplayStatus } from '../../utils/invoiceStatus';
 import { getErrorMessage } from '../../utils/errors';
 import type { Invoice } from '../../types';
+import { Link } from 'react-router';
 
 interface InvoiceCardProps {
   invoice: Invoice;
@@ -33,7 +34,9 @@ function InvoiceCard({ invoice, customerName, today, onMarkPaid }: InvoiceCardPr
   return (
     <div className="invoice-card">
       <div className="invoice-info">
-        <h4>{customerName}</h4>
+        <h4>
+  <Link to={`/invoices/${invoice.id}`}>{customerName}</Link>
+</h4>
         <p>
           {invoice.items.length} item(s) · {formatKES(invoice.total)}
         </p>

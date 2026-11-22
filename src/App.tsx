@@ -1,5 +1,6 @@
 import Card from './components/ui/Card';
 import Button from './components/ui/Button';
+import { BrowserRouter } from 'react-router';
 import CustomerForm from './components/customers/CustomerForm';
 import CustomerList from './components/customers/CustomerList';
 import InvoiceForm from './components/invoices/InvoiceForm';
@@ -47,6 +48,13 @@ function App() {
       alert(getErrorMessage(err));
     }
   }
+  createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StrictMode>
+);
 
   return (
     <div style={{ maxWidth: 400, margin: '40px auto' }}>
