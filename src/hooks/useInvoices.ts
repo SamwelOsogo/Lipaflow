@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useReducer, useEffect, useState } from 'react';
 import * as api from '../services/api';
-import type { Invoice, NewInvoice } from '../types';
+import { initialInvoicesState, invoicesReducer } from '../reducers/invoicesReducer';
+import type { NewInvoice } from '../types';
 import { getErrorMessage } from '../utils/errors';
 
 function useInvoices() {
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [state, dispatch] = useReducer(invoicesReducer, initialInvoicesState);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -14,14 +13,11 @@ function useInvoices() {
 
     api
       .getInvoices()
-      .then((data) => {
-        if (!ignore) setInvoices(data);
+      .then((invoices) => {
+        if (!ignore) dispatch({ type: 'load_succeeded', invoices });
       })
       .catch((err: unknown) => {
-        if (!ignore) setError(getErrorMessage(err));
-      })
-      .finally(() => {
-        if (!ignore) setLoading(false);
+        if (!ignore) dispatch({ type: 'load_failed', error: getErrorMessage(err) });
       });
 
     return () => {
@@ -30,22 +26,34 @@ function useInvoices() {
   }, [attempt]);
 
   function retry() {
-    setError('');
-    setLoading(true);
+    dispatch({ type: 'load_started' });
     setAttempt((n) => n + 1);
   }
 
   async function addInvoice(data: NewInvoice): Promise<void> {
-    const created = await api.createInvoice(data);
-    setInvoices((prev) => [...prev, created]);
+    const invoice = await api.createInvoice(data);
+    dispatch({ type: 'invoice_added', invoice });
   }
 
   async function markPaid(id: string): Promise<void> {
-    const updated = await api.markInvoicePaid(id);
-    setInvoices((prev) => prev.map((inv) => (inv.id === id ? updated : inv)));
+    const invoice = await api.setInvoiceStatus(id, 'Paid');
+    dispatch({ type: 'invoice_updated', invoice });
   }
 
-  return { invoices, loading, error, retry, addInvoice, markPaid };
+  async function cancel(id: string): Promise<void> {
+    const invoice = await api.setInvoiceStatus(id, 'Cancelled');
+    dispatch({ type: 'invoice_updated', invoice });
+  }
+
+  return {
+    invoices: state.invoices,
+    loading: state.loading,
+    error: state.error,
+    retry,
+    addInvoice,
+    markPaid,
+    cancel,
+  };
 }
 
 export default useInvoices;
