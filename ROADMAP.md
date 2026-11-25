@@ -38,9 +38,9 @@ Each milestone ends with something you can demo.
 - [x] Invoice list with Paid, Pending and Overdue status
 - [x] Async data layer with loading and error states (fake API)
 - [x] Migrate the app to TypeScript (strict mode), then keep all new code in TypeScript
-- [ ] Design tokens and the new visual design (UX1 to UX2)
-- [ ] React Router with sidebar and mobile layout
-- [ ] Context API and useReducer
+- [x ] Design tokens and the new visual design (UX1 to UX2)
+- [x ] React Router with sidebar and mobile layout
+- [x ] Context API and useReducer
 - [ ] KRA PIN field on customers
 - [ ] Tests, performance pass, accessibility pass
 - [ ] Deployed to Netlify or Vercel
