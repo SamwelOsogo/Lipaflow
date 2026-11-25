@@ -1,0 +1,5 @@
+[33mc3a9bf8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/react-router[m[33m)[m feat: add routes for invoices and customers
+[33m84654cb[m feat: add invoice, customer and not-found pages
+[33m6baa496[m feat: add DataGate for loading and error states
+[33m54337bd[m feat: add AppShell with sidebar and mobile tab bar
+[33m74b4b9e[m chore: add react-router

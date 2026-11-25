@@ -18,5 +18,18 @@ export function validateEmail(email: string): string {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
     return 'Enter a valid email address';
   }
+return '';
+
+}
+
+
+
+export function validateKraPin(kraPin?: string): string {
+  if (!kraPin || !kraPin.trim()) return '';
+  const cleaned = kraPin.trim().toUpperCase();
+  if (!/^[AP]\d{9}[A-Z]$/.test(cleaned)) {
+    return 'Enter a valid KRA PIN (e.g. A123456789Z)';
+  }
   return '';
 }
+

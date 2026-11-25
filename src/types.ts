@@ -12,6 +12,12 @@ export interface InvoiceItem {
   quantity: number;
   price: number;
 }
+export interface customer {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;  
+}
 
 export type InvoiceStatus = 'Pending' | 'Paid';
 export type DisplayStatus = InvoiceStatus | 'Overdue';

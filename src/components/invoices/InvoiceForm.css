@@ -19,8 +19,7 @@
   background: var(--paper);
   color: var(--ink);
 }
-
-form h4 { margin-bottom: var(--space-2); }
+.invoice-info h4 a { color: inherit; }
 
 .item-row {
   display: grid;

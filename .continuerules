@@ -1,0 +1,54 @@
+LipaFlow: Project Instructions
+
+## 1. Overview
+Payments and invoicing app for Kenyan small businesses. React frontend with a
+simulated backend (localStorage); Node/Express/database is planned (Milestone 2).
+Features so far: customers (add, search, delete), invoices (16% VAT, status filter,
+mark paid, detail page), routed screens with sidebar and mobile tab bar.
+The plan, milestones and open decisions live in ROADMAP.md. Follow it.
+
+## 2. Tech stack
+- React 19.3, react-dom 19.3 | Vite 8 + @vitejs/plugin-react 6 | TypeScript 6 (strict)
+- React Router (package `react-router`, declarative mode: BrowserRouter, Routes, NavLink)
+- ESLint 10 (typescript-eslint, react-hooks, react-refresh) | Prettier
+- Font: @fontsource-variable/public-sans | Plain CSS, no UI library
+- No state library or test runner yet. Add dependencies only when ROADMAP.md or
+  the current lesson calls for them, and say so first.
+
+## 3. Structure (src/)
+- `components/{customers,invoices,ui,layout}/` – each component has its own `.tsx` and `.css`
+- `pages/` – one component per route; `App.tsx` is the route map and holds the data hooks
+- `hooks/` – `useCustomers`, `useInvoices` (loading/error/retry + mutations), `useLocalStorage`
+- `services/api.ts` – fake async API (800ms delay, localStorage); swap for real backend later
+- `utils/` – `money`, `dates`, `validators`, `errors`, `invoiceStatus`, `owed`
+- `types.ts` – shared types | `index.css` – design tokens
+- `context/` – arrives with Day 12 (Context API replaces prop drilling from App)
+
+## 4. Conventions
+- Function components, `export default`, props typed as `interface XProps`.
+- `verbatimModuleSyntax`: use `import type` for types. `erasableSyntaxOnly`: no enums or namespaces.
+- `noUnusedLocals/Parameters` is on. No `any`. Use `unknown` in catch blocks and `getErrorMessage(err)`.
+- `as` casts on stored data are allowed only at the API boundary until Zod validation arrives.
+- Components never touch storage: UI → hooks → `services/api.ts`. Async handlers return `Promise<void>`.
+- The server (fake API now) owns ids, totals, status and timestamps. The client sends `NewInvoice` and `NewCustomer` only.
+- Money: use `calculateTotals`, `formatKES`, `VAT_RATE`. Sum in whole cents. Dates are ISO strings.
+- "Overdue" is derived via `getDisplayStatus`, never stored. Validators return `''` when valid.
+- Styling: plain CSS with the `--space-*`, `--ink`, `--pen`, `--stamp` variables from `index.css`.
+  Reuse `Button`, `Input` and `Card`. Keep 44px minimum tap targets. Avoid generic SaaS look:
+  no gradients, no shadows on everything, no pill badges.
+- Prettier style: semicolons, single quotes, 2-space indent.
+- No secrets or API keys in frontend code, ever.
+
+## 5. How we work
+- The developer is learning. Give one small step at a time with brief (1–2 sentence) explanations and a quick check at the end.
+- Never output whole files or large blocks—only show the exact lines to add or change so the developer types and tests them manually.
+- Environment: Windows, PowerShell in VS Code. Give PowerShell-compatible commands.
+- Git: one branch per task (`feature/…`, `chore/…`, `fix/…`, `docs/…`), small commits with
+  conventional messages (`feat:`, `fix:`, `refactor:`, `style:`, `docs:`, `chore:`), merge through
+  a pull request, then `git checkout main` and `git pull`. Commit every day.
+- When an error appears, ask for the first line of the message and the file name before guessing.
+- Check current docs for versions and APIs instead of relying on memory.
+
+## 6. Commands
+- `npm install` | `npm run dev` | `npm run build` (`tsc -b && vite build`)
+- `npm run lint` | `npx tsc -b` | `npm run preview`

@@ -1,92 +1,28 @@
-import Card from './components/ui/Card';
-import Button from './components/ui/Button';
-import CustomerForm from './components/customers/CustomerForm';
-import CustomerList from './components/customers/CustomerList';
-import InvoiceForm from './components/invoices/InvoiceForm';
-import InvoiceList from './components/invoices/InvoiceList';
-import useCustomers from './hooks/useCustomers';
-import useInvoices from './hooks/useInvoices';
-import { getErrorMessage } from './utils/errors';
+import { Navigate, Route, Routes } from 'react-router';
+import AppShell from './components/layout/AppShell';
+import DataGate from './components/layout/DataGate';
+import InvoicesPage from './pages/InvoicesPage';
+import NewInvoicePage from './pages/NewInvoicePage';
+import InvoiceDetailPage from './pages/InvoiceDetailPage';
+import CustomersPage from './pages/CustomersPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
-  const {
-    customers,
-    loading: customersLoading,
-    error: customersError,
-    retry: retryCustomers,
-    addCustomer,
-    removeCustomer,
-  } = useCustomers();
-
-  const {
-    invoices,
-    loading: invoicesLoading,
-    error: invoicesError,
-    retry: retryInvoices,
-    addInvoice,
-    markPaid,
-  } = useInvoices();
-
-  const loading = customersLoading || invoicesLoading;
-  const loadError = customersError || invoicesError;
-
-  function retryAll() {
-    if (customersError) retryCustomers();
-    if (invoicesError) retryInvoices();
-  }
-
-  async function deleteCustomer(id: string) {
-    const hasInvoices = invoices.some((inv) => inv.customerId === id);
-    if (hasInvoices) {
-      alert('This customer has invoices, so they cannot be deleted.');
-      return;
-    }
-    try {
-      await removeCustomer(id);
-    } catch (err) {
-      alert(getErrorMessage(err));
-    }
-  }
-
   return (
-    <div style={{ maxWidth: 400, margin: '40px auto' }}>
-      <h1>LipaFlow</h1>
+    <Routes>
+      <Route element={<AppShell />}>
+        <Route index element={<Navigate to="/invoices" replace />} />
 
-      <Card title="Add customer">
-        <CustomerForm onAddCustomer={addCustomer} />
-      </Card>
+        <Route element={<DataGate />}>
+          <Route path="invoices" element={<InvoicesPage />} />
+          <Route path="invoices/new" element={<NewInvoicePage />} />
+          <Route path="invoices/:id" element={<InvoiceDetailPage />} />
+          <Route path="customers" element={<CustomersPage />} />
+        </Route>
 
-      <Card title={`Customers (${customers.length})`}>
-        {loading && <p>Loading customers...</p>}
-        {loadError && (
-          <div>
-            <p className="error-text">{loadError}</p>
-            <Button onClick={retryAll}>Try again</Button>
-          </div>
-        )}
-        {!loading && !loadError && (
-          <CustomerList customers={customers} onDelete={deleteCustomer} />
-        )}
-      </Card>
-
-      <Card title="Create invoice">
-        {loading && <p>Loading...</p>}
-        {!loading && !loadError && (
-          <InvoiceForm customers={customers} onAddInvoice={addInvoice} />
-        )}
-      </Card>
-
-      <Card title={`Invoices (${invoices.length})`}>
-        {loading && <p>Loading...</p>}
-        {!loading && !loadError && (
-          <InvoiceList
-            invoices={invoices}
-            customers={customers}
-            onMarkPaid={markPaid}
-          />
-        )}
-      </Card>
-    </div>
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
   );
 }
 
