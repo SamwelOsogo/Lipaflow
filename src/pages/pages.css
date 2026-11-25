@@ -42,3 +42,12 @@ a { color: var(--pen); }
   font-size: 1.125rem;
   font-weight: 700;
 }
+.owed {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-6);
+  margin-bottom: var(--space-4);
+  font-variant-numeric: tabular-nums;
+}
+
+.owed-overdue { color: var(--stamp); font-weight: 600; }
