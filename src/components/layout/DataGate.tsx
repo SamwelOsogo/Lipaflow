@@ -1,20 +1,17 @@
 import { Outlet } from 'react-router';
 import Button from '../ui/Button';
+import useData from '../../hooks/useData';
 
-interface DataGateProps {
-  loading: boolean;
-  error: string;
-  onRetry: () => void;
-}
+function DataGate() {
+  const { loading, error, retry } = useData();
 
-function DataGate({ loading, error, onRetry }: DataGateProps) {
   if (loading) return <p>Loading...</p>;
 
   if (error) {
     return (
       <div>
         <p className="error-text">{error}</p>
-        <Button onClick={onRetry}>Try again</Button>
+        <Button onClick={retry}>Try again</Button>
       </div>
     );
   }

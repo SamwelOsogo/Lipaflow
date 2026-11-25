@@ -1,19 +1,16 @@
 import { Link, useNavigate } from 'react-router';
 import Card from '../components/ui/Card';
 import InvoiceForm from '../components/invoices/InvoiceForm';
-import type { Customer, NewInvoice } from '../types';
+import useData from '../hooks/useData';
+import type { NewInvoice } from '../types';
 import './pages.css';
 
-interface NewInvoicePageProps {
-  customers: Customer[];
-  onAddInvoice: (data: NewInvoice) => Promise<void>;
-}
-
-function NewInvoicePage({ customers, onAddInvoice }: NewInvoicePageProps) {
+function NewInvoicePage() {
+  const { customers, addInvoice } = useData();
   const navigate = useNavigate();
 
   async function handleAdd(data: NewInvoice) {
-    await onAddInvoice(data);
+    await addInvoice(data);
     navigate('/invoices');
   }
 

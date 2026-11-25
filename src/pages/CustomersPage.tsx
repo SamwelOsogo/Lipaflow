@@ -1,26 +1,31 @@
 import Card from '../components/ui/Card';
 import CustomerForm from '../components/customers/CustomerForm';
 import CustomerList from '../components/customers/CustomerList';
-import type { Customer, NewCustomer } from '../types';
+import useData from '../hooks/useData';
+import { getErrorMessage } from '../utils/errors';
 import './pages.css';
 
-interface CustomersPageProps {
-  customers: Customer[];
-  onAddCustomer: (data: NewCustomer) => Promise<void>;
-  onDelete: (id: string) => void;
-}
+function CustomersPage() {
+  const { customers, addCustomer, deleteCustomer } = useData();
 
-function CustomersPage({ customers, onAddCustomer, onDelete }: CustomersPageProps) {
+  async function handleDelete(id: string) {
+    try {
+      await deleteCustomer(id);
+    } catch (err) {
+      alert(getErrorMessage(err));
+    }
+  }
+
   return (
     <>
       <div className="page-header">
         <h2>Customers</h2>
       </div>
       <Card title="New customer">
-        <CustomerForm onAddCustomer={onAddCustomer} />
+        <CustomerForm onAddCustomer={addCustomer} />
       </Card>
       <Card title={`All customers (${customers.length})`}>
-        <CustomerList customers={customers} onDelete={onDelete} />
+        <CustomerList customers={customers} onDelete={handleDelete} />
       </Card>
     </>
   );

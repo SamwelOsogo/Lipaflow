@@ -4,11 +4,14 @@ import { BrowserRouter } from 'react-router';
 import '@fontsource-variable/public-sans/index.css';
 import './index.css';
 import App from './App';
+import DataProvider from './context/DataProvider';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <DataProvider>
+        <App />
+      </DataProvider>
     </BrowserRouter>
   </StrictMode>
 );

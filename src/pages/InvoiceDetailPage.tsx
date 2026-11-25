@@ -3,20 +3,15 @@ import { Link, useParams } from 'react-router';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import StatusBadge from '../components/invoices/StatusBadge';
+import useData from '../hooks/useData';
 import { formatKES } from '../utils/money';
 import { formatDate, todayISO } from '../utils/dates';
 import { getDisplayStatus } from '../utils/invoiceStatus';
 import { getErrorMessage } from '../utils/errors';
-import type { Customer, Invoice } from '../types';
 import './pages.css';
 
-interface InvoiceDetailPageProps {
-  invoices: Invoice[];
-  customers: Customer[];
-  onMarkPaid: (id: string) => Promise<void>;
-}
-
-function InvoiceDetailPage({ invoices, customers, onMarkPaid }: InvoiceDetailPageProps) {
+function InvoiceDetailPage() {
+  const { invoices, customers, markInvoicePaid } = useData();
   const { id } = useParams<{ id: string }>();
   const [paying, setPaying] = useState(false);
 
@@ -38,7 +33,7 @@ function InvoiceDetailPage({ invoices, customers, onMarkPaid }: InvoiceDetailPag
   async function handleMarkPaid() {
     setPaying(true);
     try {
-      await onMarkPaid(invoiceId);
+      await markInvoicePaid(invoiceId);
     } catch (err) {
       alert(getErrorMessage(err));
     } finally {

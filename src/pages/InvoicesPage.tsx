@@ -1,16 +1,16 @@
 import { Link } from 'react-router';
 import Card from '../components/ui/Card';
 import InvoiceList from '../components/invoices/InvoiceList';
-import type { Customer, Invoice } from '../types';
+import useData from '../hooks/useData';
+import { formatKES } from '../utils/money';
+import { todayISO } from '../utils/dates';
+import { summarizeOwed } from '../utils/owed';
 import './pages.css';
 
-interface InvoicesPageProps {
-  invoices: Invoice[];
-  customers: Customer[];
-  onMarkPaid: (id: string) => Promise<void>;
-}
+function InvoicesPage() {
+  const { invoices, customers, markInvoicePaid } = useData();
+  const owed = summarizeOwed(invoices, todayISO());
 
-function InvoicesPage({ invoices, customers, onMarkPaid }: InvoicesPageProps) {
   return (
     <>
       <div className="page-header">
@@ -19,8 +19,20 @@ function InvoicesPage({ invoices, customers, onMarkPaid }: InvoicesPageProps) {
           New invoice
         </Link>
       </div>
+
+      <p className="owed">
+        <span>Waiting {formatKES(owed.waiting)}</span>
+        <span className={owed.overdue > 0 ? 'owed-overdue' : undefined}>
+          Overdue {formatKES(owed.overdue)}
+        </span>
+      </p>
+
       <Card>
-        <InvoiceList invoices={invoices} customers={customers} onMarkPaid={onMarkPaid} />
+        <InvoiceList
+          invoices={invoices}
+          customers={customers}
+          onMarkPaid={markInvoicePaid}
+        />
       </Card>
     </>
   );
