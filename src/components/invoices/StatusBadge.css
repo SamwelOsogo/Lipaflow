@@ -20,3 +20,4 @@
   letter-spacing: 0;
   text-transform: none;
 }
+.badge-cancelled { color: var(--ink-muted); }

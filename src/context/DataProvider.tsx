@@ -33,6 +33,8 @@ function DataProvider({ children }: DataProviderProps) {
     deleteCustomer,
     addInvoice: invoicesState.addInvoice,
     markInvoicePaid: invoicesState.markPaid,
+    cancelInvoice: invoicesState.cancel,
+    
   };
 
   return <DataContext value={value}>{children}</DataContext>;

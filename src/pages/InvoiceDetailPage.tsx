@@ -7,13 +7,14 @@ import useData from '../hooks/useData';
 import { formatKES } from '../utils/money';
 import { formatDate, todayISO } from '../utils/dates';
 import { getDisplayStatus } from '../utils/invoiceStatus';
+import { canTransition } from '../utils/invoiceTransitions';
 import { getErrorMessage } from '../utils/errors';
 import './pages.css';
 
 function InvoiceDetailPage() {
-  const { invoices, customers, markInvoicePaid } = useData();
+  const { invoices, customers, markInvoicePaid, cancelInvoice } = useData();
   const { id } = useParams<{ id: string }>();
-  const [paying, setPaying] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   const invoice = invoices.find((inv) => inv.id === id);
 
@@ -29,15 +30,23 @@ function InvoiceDetailPage() {
   const invoiceId = invoice.id;
   const customer = customers.find((c) => c.id === invoice.customerId);
   const status = getDisplayStatus(invoice, todayISO());
+  const canPay = canTransition(invoice.status, 'Paid');
+  const canCancel = canTransition(invoice.status, 'Cancelled');
 
-  async function handleMarkPaid() {
-    setPaying(true);
+  async function run(action: (id: string) => Promise<void>) {
+    setBusy(true);
     try {
-      await markInvoicePaid(invoiceId);
+      await action(invoiceId);
     } catch (err) {
       alert(getErrorMessage(err));
     } finally {
-      setPaying(false);
+      setBusy(false);
+    }
+  }
+
+  function handleCancel() {
+    if (window.confirm('Cancel this invoice? This cannot be undone.')) {
+      void run(cancelInvoice);
     }
   }
 
@@ -80,10 +89,19 @@ function InvoiceDetailPage() {
           </p>
         </div>
 
-        {status !== 'Paid' && (
-          <Button onClick={handleMarkPaid} disabled={paying}>
-            {paying ? 'Saving...' : 'Mark as paid'}
-          </Button>
+        {(canPay || canCancel) && (
+          <div className="sheet-actions">
+            {canPay && (
+              <Button onClick={() => run(markInvoicePaid)} disabled={busy}>
+                {busy ? 'Saving...' : 'Mark as paid'}
+              </Button>
+            )}
+            {canCancel && (
+              <Button variant="secondary" onClick={handleCancel} disabled={busy}>
+                Cancel invoice
+              </Button>
+            )}
+          </div>
         )}
       </Card>
     </>

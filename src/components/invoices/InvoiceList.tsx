@@ -6,8 +6,7 @@ import { getDisplayStatus } from '../../utils/invoiceStatus';
 import type { Customer, DisplayStatus, Invoice } from '../../types';
 
 type Filter = 'All' | DisplayStatus;
-
-const FILTERS: Filter[] = ['All', 'Pending', 'Overdue', 'Paid'];
+const FILTERS: Filter[] = ['All', 'Pending', 'Overdue', 'Paid', 'Cancelled'];
 
 interface InvoiceListProps {
   invoices: Invoice[];

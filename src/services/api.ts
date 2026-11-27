@@ -1,8 +1,7 @@
-import type { Customer, Invoice, NewCustomer, NewInvoice } from '../types';
-import { calculateTotals } from '../utils/money';
 import type { Customer, Invoice, InvoiceStatus, NewCustomer, NewInvoice } from '../types';
 import { calculateTotals } from '../utils/money';
 import { canTransition } from '../utils/invoiceTransitions';
+
 const CUSTOMERS_KEY = 'lipaflow-db-customers';
 const INVOICES_KEY = 'lipaflow-db-invoices';
 const DELAY_MS = 800;
