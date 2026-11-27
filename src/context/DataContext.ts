@@ -11,6 +11,7 @@ export interface DataContextValue {
   deleteCustomer: (id: string) => Promise<void>;
   addInvoice: (data: NewInvoice) => Promise<void>;
   markInvoicePaid: (id: string) => Promise<void>;
+    cancelInvoice: (id: string) => Promise<void>;
 }
 
 export const DataContext = createContext<DataContextValue | null>(null);

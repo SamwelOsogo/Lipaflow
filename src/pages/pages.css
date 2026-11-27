@@ -51,3 +51,4 @@ a { color: var(--pen); }
 }
 
 .owed-overdue { color: var(--stamp); font-weight: 600; }
+.sheet-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }

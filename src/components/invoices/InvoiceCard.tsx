@@ -8,15 +8,18 @@ import { getDisplayStatus } from '../../utils/invoiceStatus';
 import { getErrorMessage } from '../../utils/errors';
 import type { Invoice } from '../../types';
 import { Link } from 'react-router';
+import { canTransition } from '../../utils/invoiceTransitions';    
+
 
 interface InvoiceCardProps {
   invoice: Invoice;
   customerName: string;
   today: string;
   onMarkPaid: (id: string) => Promise<void>;
+  onCancelInvoice: (id: string) => Promise<void>;
 }
 
-function InvoiceCard({ invoice, customerName, today, onMarkPaid }: InvoiceCardProps) {
+function InvoiceCard({ invoice, customerName, today, onMarkPaid, onCancelInvoice }: InvoiceCardProps) {
   const [paying, setPaying] = useState(false);
   const status = getDisplayStatus(invoice, today);
 
@@ -44,7 +47,7 @@ function InvoiceCard({ invoice, customerName, today, onMarkPaid }: InvoiceCardPr
       </div>
       <div className="invoice-side">
         <StatusBadge status={status} />
-        {status !== 'Paid' && (
+        {canTransition(invoice.status, 'Cancelled ') && (
           <Button variant="secondary" onClick={handleMarkPaid} disabled={paying}>
             {paying ? 'Saving...' : 'Mark paid'}
           </Button>

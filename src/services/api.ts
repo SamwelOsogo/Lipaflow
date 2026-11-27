@@ -1,5 +1,6 @@
-import type { Customer, Invoice, NewCustomer, NewInvoice } from '../types';
+import type { Customer, Invoice, InvoiceStatus, NewCustomer, NewInvoice } from '../types';
 import { calculateTotals } from '../utils/money';
+import { canTransition } from '../utils/invoiceTransitions';
 
 const CUSTOMERS_KEY = 'lipaflow-db-customers';
 const INVOICES_KEY = 'lipaflow-db-invoices';
@@ -68,14 +69,22 @@ export async function createInvoice(data: NewInvoice): Promise<Invoice> {
   return invoice;
 }
 
-export async function markInvoicePaid(id: string): Promise<Invoice> {
+export async function setInvoiceStatus(id: string, status: InvoiceStatus): Promise<Invoice> {
   await simulateNetwork();
   const invoices = readList<Invoice>(INVOICES_KEY);
   const existing = invoices.find((inv) => inv.id === id);
   if (!existing) {
     throw new Error('Invoice not found.');
   }
-  const updated: Invoice = { ...existing, status: 'Paid' };
+  if (existing.status === status) {
+    return existing;
+  }
+  if (!canTransition(existing.status, status)) {
+    throw new Error(
+      `A ${existing.status.toLowerCase()} invoice cannot be changed to ${status.toLowerCase()}.`
+    );
+  }
+  const updated: Invoice = { ...existing, status };
   writeList(
     INVOICES_KEY,
     invoices.map((inv) => (inv.id === id ? updated : inv))

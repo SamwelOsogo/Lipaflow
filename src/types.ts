@@ -12,14 +12,8 @@ export interface InvoiceItem {
   quantity: number;
   price: number;
 }
-export interface customer {
-  id: string;
-  name: string;
-  phone: string;
-  email: string;  
-}
 
-export type InvoiceStatus = 'Pending' | 'Paid';
+export type InvoiceStatus = 'Pending' | 'Paid' | 'Cancelled';
 export type DisplayStatus = InvoiceStatus | 'Overdue';
 
 export interface Invoice {
@@ -33,4 +27,5 @@ export interface Invoice {
   status: InvoiceStatus;
   createdAt: string;
 }
+
 export type NewInvoice = Pick<Invoice, 'customerId' | 'dueDate' | 'items'>;
